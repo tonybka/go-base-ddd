@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/tonybka/go-base-ddd/event"
+import "github.com/tonybka/go-base-ddd/domain/event"
 
 type BaseAggregateRoot struct {
 	BaseEntity

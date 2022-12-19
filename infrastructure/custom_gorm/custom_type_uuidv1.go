@@ -1,17 +1,20 @@
-package gorm
+package customgorm
 
 import (
 	"database/sql/driver"
+	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 type CustomTypeUUIDv1 uuid.UUID
 
-// NewCustomTypeUUIDv1FromString -> parse string to CustomTypeUUIDv1
-func NewCustomTypeUUIDv1FromString(s string) (CustomTypeUUIDv1, error) {
-	id, err := uuid.Parse(s)
-	return CustomTypeUUIDv1(id), err
+// CustomTypeUUIDv1FromString -> parse string to CustomTypeUUIDv1
+func CustomTypeUUIDv1FromString(s string) CustomTypeUUIDv1 {
+	return CustomTypeUUIDv1(uuid.MustParse(s))
 }
 
 //String -> String Representation of Binary16
@@ -22,6 +25,18 @@ func (my CustomTypeUUIDv1) String() string {
 //GormDataType -> sets type to binary(16)
 func (my CustomTypeUUIDv1) GormDataType() string {
 	return "binary(16)"
+}
+
+// GormDBDataType returns gorm DB data type based on the current using database.
+func (my CustomTypeUUIDv1) GormDBDataType(db *gorm.DB, field *schema.Field) string {
+	switch db.Dialector.Name() {
+	case "mysql":
+		return "BINARY(16)"
+	case "sqlite":
+		return "BLOB"
+	default:
+		return ""
+	}
 }
 
 func (my CustomTypeUUIDv1) MarshalJSON() ([]byte, error) {
@@ -39,9 +54,13 @@ func (my *CustomTypeUUIDv1) UnmarshalJSON(by []byte) error {
 // Scan --> tells GORM how to receive from the database
 func (my *CustomTypeUUIDv1) Scan(value interface{}) error {
 
-	bytes, _ := value.([]byte)
-	parseByte, err := uuid.FromBytes(bytes)
-	*my = CustomTypeUUIDv1(parseByte)
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New(fmt.Sprint("Failed to decode value:", value))
+	}
+
+	parseBytes, err := uuid.FromBytes(bytes)
+	*my = CustomTypeUUIDv1(parseBytes)
 	return err
 }
 
