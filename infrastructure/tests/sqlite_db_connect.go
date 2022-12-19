@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type SqliteDBConnect struct {
@@ -29,6 +30,7 @@ func NewSqliteDBConnect() (*SqliteDBConnect, error) {
 
 	dbConn, err := gorm.Open(dialector, &gorm.Config{
 		SkipDefaultTransaction: true,
+		Logger:                 logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		return nil, err
