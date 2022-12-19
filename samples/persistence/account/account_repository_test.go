@@ -34,16 +34,17 @@ func (ts *AccountRepositoryTestSuite) SetupSuite() {
 }
 
 func (ts *AccountRepositoryTestSuite) TestCreateAccount() {
-	entityId := customgorm.CustomTypeUUIDv1FromString(uuid.New().String())
+	entityId, err := uuid.NewUUID()
+	ts.NoError(err)
 
 	account := AccountModel{
 		BaseModel: persistence.BaseModel{
-			ID: entityId,
+			ID: customgorm.CustomTypeUUIDv1FromString(entityId.String()),
 		},
 		AccountName: "abc",
 	}
 
-	err := ts.accountRepo.Create(account)
+	err = ts.accountRepo.Create(account)
 	ts.NoError(err)
 
 	all, err := ts.accountRepo.GetAll()
