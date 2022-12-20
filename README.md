@@ -24,6 +24,7 @@ Fundamental elements of DDD implementation in Golang microservice
 - Need to have random, unique identity values for entities
 - To decouple domain layer from persistence layer, we should not use table row's id for entity's identity
 - MySQL support storing UUIDv1 as BINARY(16) in database which saves storage space
+- Comparing UUIDv1 values is faster than comparing values of the other versions (they have common dash-separated groups if they are generated on a same machine)
 
 ### References
 - [Making UUIDs More Performant in MySQL](https://emmer.dev/blog/making-uuids-more-performant-in-mysql/)
