@@ -14,6 +14,7 @@ func NewAccountRepository(db *gorm.DB) *AccountRepository {
 	return &AccountRepository{db}
 }
 
+// Create creates new account
 func (repo *AccountRepository) Create(dataModel AccountModel) error {
 	if result := repo.db.Create(&dataModel); result.Error != nil {
 		return result.Error
@@ -21,6 +22,7 @@ func (repo *AccountRepository) Create(dataModel AccountModel) error {
 	return nil
 }
 
+// FindById query account by it's identity
 func (repo *AccountRepository) FindById(id uuid.UUID) (AccountModel, error) {
 	var dataModel AccountModel
 
@@ -31,6 +33,7 @@ func (repo *AccountRepository) FindById(id uuid.UUID) (AccountModel, error) {
 	return dataModel, nil
 }
 
+// GetAll returns all accounts in the table
 func (repo *AccountRepository) GetAll() ([]AccountModel, error) {
 	var dataModels []AccountModel
 
