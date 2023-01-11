@@ -1,4 +1,8 @@
 package event
 
-type IBaseDomainEvent struct {
+import "time"
+
+type IBaseDomainEvent interface {
+	EventName() string
+	OccurredAt() time.Time
 }
