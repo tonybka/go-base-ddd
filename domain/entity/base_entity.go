@@ -1,17 +1,9 @@
 package entity
 
-import "github.com/google/uuid"
-
 type BaseEntity struct {
-	ID uuid.UUID
+	ID uint
 }
 
-func NewBaseEntity() (BaseEntity, error) {
-	id, err := uuid.NewUUID()
-
-	if err != nil {
-		return BaseEntity{}, err
-	}
-
-	return BaseEntity{ID: id}, nil
+func NewBaseEntity(id uint) BaseEntity {
+	return BaseEntity{ID: id}
 }

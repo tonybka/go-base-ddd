@@ -1,4 +1,4 @@
-package customgorm
+package types
 
 import (
 	"database/sql/driver"
@@ -17,12 +17,12 @@ func CustomTypeUUIDv1FromString(s string) CustomTypeUUIDv1 {
 	return CustomTypeUUIDv1(uuid.MustParse(s))
 }
 
-//String -> String Representation of Binary16
+// String -> String Representation of Binary16
 func (my CustomTypeUUIDv1) String() string {
 	return uuid.UUID(my).String()
 }
 
-//GormDataType -> sets type to binary(16)
+// GormDataType -> sets type to binary(16)
 func (my CustomTypeUUIDv1) GormDataType() string {
 	return "binary(16)"
 }
