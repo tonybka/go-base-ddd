@@ -8,18 +8,14 @@ type BaseAggregateRoot struct {
 	domainEvents []event.IBaseDomainEvent
 }
 
-func NewBaseAggregateRoot() (BaseAggregateRoot, error) {
-	base, err := NewBaseEntity()
-	if err != nil {
-		return BaseAggregateRoot{}, nil
-	}
-
+func NewBaseAggregateRoot(rootEntityId uint) BaseAggregateRoot {
+	base := NewBaseEntity(rootEntityId)
 	events := make([]event.IBaseDomainEvent, 0)
 
 	return BaseAggregateRoot{
 		BaseEntity:   base,
 		domainEvents: events,
-	}, nil
+	}
 }
 
 func (aggregate *BaseAggregateRoot) AddEvent(event event.IBaseDomainEvent) {
