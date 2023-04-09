@@ -56,9 +56,10 @@ func GetDomainEventPublisher() *DomainEventPublisher {
 
 // InitDomainEventPublisher initialize Domain Event Publisher
 func InitDomainEventPublisher() *DomainEventPublisher {
-	singletonEventPublisher = &DomainEventPublisher{
-		eventHandlers: map[string][]IDomainEvenHandler{},
+	if singletonEventPublisher == nil {
+		singletonEventPublisher = &DomainEventPublisher{
+			eventHandlers: map[string][]IDomainEvenHandler{},
+		}
 	}
-
 	return singletonEventPublisher
 }
