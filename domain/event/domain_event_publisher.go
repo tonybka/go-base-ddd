@@ -1,9 +1,5 @@
 package event
 
-import (
-	"gorm.io/gorm"
-)
-
 // =----------------------
 // DomainEventPublisher
 // =----------------------
@@ -25,7 +21,7 @@ func (publisher *DomainEventPublisher) RegisterSubscriber(event IBaseDomainEvent
 }
 
 // Publish notifies all registered subscribers about the given events
-func (publisher *DomainEventPublisher) Publish(tx *gorm.DB, events ...IBaseDomainEvent) error {
+func (publisher *DomainEventPublisher) Publish(events ...IBaseDomainEvent) error {
 	for _, event := range events {
 		eventName := event.Name()
 
