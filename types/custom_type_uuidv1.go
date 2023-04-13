@@ -6,8 +6,6 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 )
 
 type CustomTypeUUIDv1 uuid.UUID
@@ -20,23 +18,6 @@ func CustomTypeUUIDv1FromString(s string) CustomTypeUUIDv1 {
 // String -> String Representation of Binary16
 func (my CustomTypeUUIDv1) String() string {
 	return uuid.UUID(my).String()
-}
-
-// GormDataType -> sets type to binary(16)
-func (my CustomTypeUUIDv1) GormDataType() string {
-	return "binary(16)"
-}
-
-// GormDBDataType returns gorm DB data type based on the current using database.
-func (my CustomTypeUUIDv1) GormDBDataType(db *gorm.DB, field *schema.Field) string {
-	switch db.Dialector.Name() {
-	case "mysql":
-		return "BINARY(16)"
-	case "sqlite":
-		return "BLOB"
-	default:
-		return ""
-	}
 }
 
 func (my CustomTypeUUIDv1) MarshalJSON() ([]byte, error) {
