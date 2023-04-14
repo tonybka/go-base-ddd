@@ -8,7 +8,7 @@ import (
 const DBTblNameAccounts = "accounts"
 
 type Account struct {
-	entity.BaseEntity
+	entity.BaseAggregateRoot
 	AccountName string
 }
 

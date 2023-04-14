@@ -84,8 +84,8 @@ func (ts *AccountRepositoryTestSuite) TestCreateAccount() {
 	randId := rand.Intn(99999)
 
 	account := Account{
-		BaseEntity:  entity.NewBaseEntity(uint(randId)),
-		AccountName: tests.RandomString(),
+		BaseAggregateRoot: entity.NewBaseAggregateRoot(uint(randId)),
+		AccountName:       tests.RandomString(),
 	}
 
 	result, err := ts.accountRepo.Create(account)
@@ -119,8 +119,8 @@ func (ts *AccountRepositoryTestSuite) TestAccountWithEvent() {
 	randId := rand.Intn(99999)
 
 	account := Account{
-		BaseEntity:  entity.NewBaseEntity(uint(randId)),
-		AccountName: tests.RandomString(),
+		BaseAggregateRoot: entity.NewBaseAggregateRoot(uint(randId)),
+		AccountName:       tests.RandomString(),
 	}
 
 	account.AddEvent(DBTblNameAccounts, NewAccountCreatedEvent(uint(randId), nil))
