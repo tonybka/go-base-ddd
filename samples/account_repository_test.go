@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"github.com/tonybka/go-base-ddd/domain/entity"
@@ -37,8 +38,9 @@ CREATE TABLE emails
 
 type AccountRepositoryTestSuite struct {
 	suite.Suite
-	accountRepo *AccountRepository
-	emailRepo   *EmailRepository
+	accountRepo           *AccountRepository
+	emailRepo             *EmailRepository
+	accountCreatedHandler *AccountCreatedEventHandler
 }
 
 func (ts *AccountRepositoryTestSuite) SetupSuite() {
@@ -73,7 +75,9 @@ func (ts *AccountRepositoryTestSuite) SetupSuite() {
 	require.NoError(ts.T(), err)
 
 	// Register handlers of domain event
-	accountCreatedSubscribers := []event.IDomainEvenHandler{NewAccountCreatedEventHandler(ts.accountRepo)}
+	accountCreatedHandler := NewAccountCreatedEventHandler(ts.accountRepo)
+	ts.accountCreatedHandler = accountCreatedHandler
+	accountCreatedSubscribers := []event.IDomainEvenHandler{accountCreatedHandler}
 	publisher.RegisterSubscriber(&AccountCreatedEvent{}, accountCreatedSubscribers...)
 
 	// Reset random seed to make sure the generated value is unique
@@ -125,8 +129,17 @@ func (ts *AccountRepositoryTestSuite) TestAccountWithEvent() {
 
 	account.AddEvent(DBTblNameAccounts, NewAccountCreatedEvent(uint(randId), nil))
 
+	assert.False(ts.T(), ts.accountCreatedHandler.isNotified)
 	_, err := ts.accountRepo.Create(account)
 	ts.NoError(err)
+
+	ts.Eventually(func() bool {
+		return ts.accountCreatedHandler.isNotified
+	}, 2*time.Second, 100*time.Microsecond, "Expect the event handler to be notified")
+
+	ts.Eventually(func() bool {
+		return ts.accountCreatedHandler.isCompleted
+	}, 2*time.Second, 100*time.Microsecond, "Expect the event handler processing is able to be completed")
 }
 
 func (ts *AccountRepositoryTestSuite) TearDownSuite() {

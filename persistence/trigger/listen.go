@@ -33,6 +33,6 @@ func listenToTriggers(pool *pgxpool.Pool, callback func(uint, string, uint, stri
 
 		payloads := strings.Split(notification.Payload, ";")
 		rowID, _ := strconv.ParseUint(payloads[1], 10, 64)
-		callback(uint(notification.PID), payloads[0], uint(rowID), payloads[2])
+		go callback(uint(notification.PID), payloads[0], uint(rowID), payloads[2])
 	}
 }
