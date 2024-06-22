@@ -11,13 +11,14 @@ import (
 // modelHooks get called whenever there is new create-or-update event triggered
 func modelHooks(pid uint, table string, rowID uint, action string) error {
 	pendingEvents := event.EventSource.GetPendingEvents(table)
-
-	publisher := event.GetDomainEventPublisher()
-	err := publisher.Publish(pendingEvents...)
-	if err != nil {
-		return err
+	if len(pendingEvents) > 0 {
+		publisher := event.GetDomainEventPublisher()
+		err := publisher.Publish(pendingEvents...)
+		if err != nil {
+			return err
+		}
+		event.EventSource.CleanupPendingEvents(table)
 	}
-
 	return nil
 }
 

@@ -25,3 +25,7 @@ func (storage *EventStorage) AddEvent(dataModel string, domainEvent IBaseDomainE
 func (storage *EventStorage) GetPendingEvents(dataModel string) []IBaseDomainEvent {
 	return storage.pendingEvents[dataModel]
 }
+
+func (storage *EventStorage) CleanupPendingEvents(dataModel string) {
+	storage.pendingEvents[dataModel] = nil
+}
